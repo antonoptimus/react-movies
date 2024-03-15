@@ -1,5 +1,7 @@
 import React from "react";
 import Movies from "../Movies";
+import Preloader from "../Preloader";
+import Search from "../Search";
 
 export default class Main extends React.Component {
   state = {
@@ -12,16 +14,19 @@ export default class Main extends React.Component {
       .then((data) => this.setState({ movies: data.Search }));
   }
 
+  searchMovies = (string) => {
+    fetch(`http://www.omdbapi.com/?apikey=1dcf3d3c&s=${string}`)
+      .then((response) => response.json())
+      .then((data) => this.setState({ movies: data.Search }));
+  };
+
   render() {
     const { movies } = this.state;
 
     return (
       <main className="container content">
-        {movies.length ? (
-          <Movies movies={this.state.movies} />
-        ) : (
-          <h3>Loading...</h3>
-        )}
+        <Search searchMovies={this.searchMovies} />
+        {movies.length ? <Movies movies={this.state.movies} /> : <Preloader />}
       </main>
     );
   }
